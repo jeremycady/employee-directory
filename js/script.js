@@ -1,5 +1,6 @@
 const search = document.querySelector('.search-container');
 const gallery = document.querySelector('#gallery');
+const body = document.querySelector('body');
 let employees = [];
 
 // fetch the employees from the Random User Generator API
@@ -7,8 +8,20 @@ fetch('https://randomuser.me/api/?results=12&inc=name,picture,email,location,cel
     .then( response => response.json() )
     .then( data => {
         employees = data.results;
-        createDirectory(employees);
+        formatData();
+        createDirectory();
     });
+
+// reformats cell number and birthdate
+const formatData = () => {
+    for (let employee of employees) {
+        employee.cell = employee.cell.replace(/\D/g, '')
+            .replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+        
+        const date = new Date(employee.dob.date);
+        employee.dob.date = `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+    }
+}
 
 // create the employee directory gallery
 const createDirectory = () => {
@@ -39,43 +52,31 @@ const createDirectory = () => {
 const createModal = (email) => {
     for (let employee of employees) {
         if (email === employee.email) {
-            const modalContainer = createElement('div', 'modal-container');
-            const modal = createElement('div', 'modal');
-            const button = createElement('button', 'modal-close-btn');
-            const infoContainer = createElement('div', 'modal-info-container');
-            const img = createElement('img', 'modal-img');
-            const name = createElement('h3', 'modal-name cap');
-            const email = createElement('p', 'modal-text');
-            const location = createElement('p', 'modal-text cap');
-            const phone = createElement('p', 'modal-text');
-            const address = createElement('p', 'modal-text');
-            const birthday = createElement('p', 'modal-text');
-            const hr = document.createElement('hr');
+            const modal = document.createElement('div');
+            modal.className = 'modal-container'
 
-            button.setAttribute('type', 'button');
-            button.setAttribute('id', 'modal-close-btn');
-            button.innerHTML = '<strong>X</strong>';
-            img.setAttribute('alt', 'profile picture');
-            img.setAttribute('src', employee.picture.large);
+            modal.innerHTML = `
+                <div class="modal">
+                    <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+                    <div class="modal-info-container">
+                        <img class="modal-img" src="${employee.picture.large}" alt="profile picture">
+                        <h3 class="modal-name cap">${employee.name.first} ${employee.name.last}</h3>
+                        <p class="modal-text">${employee.email}</p>
+                        <p class="modal-text cap">${employee.location.city}</p>
+                        <hr>
+                        <p class="modal-text">${employee.cell}</p>
+                        <p class="modal-text">${employee.location.street.number} ${employee.location.street.name}, 
+                        ${employee.location.city}, ${employee.location.state} ${employee.location.postcode}</p>
+                        <p class="modal-text">Birthday: ${employee.dob.date}</p>
+                    </div>
+                </div>
+                <div class="modal-btn-container">
+                    <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+                    <button type="button" id="modal-next" class="modal-next btn">Next</button>
+                </div>
+            `;
 
-            name.textContent = `${employee.name.first} ${employee.name.last}`;
-            email.textContent = `${employee.email}`;
-            location.textContent = `${employee.location.city}`;
-            phone.textContent = `${employee.textContent.cell}`;
-            address.textContent = `${employee.location.street}, ${employee.location.city}, ${employee.location.state} ${employee.location.postcode}`;
-            birthday.textContent = `Birthday: ${employee.dob.date}`;
-
-            modalContainer.appendChild(modal);
-            modal.appendChild(button);
-            modal.appendChild(infoContainer);
-            infoContainer.appendChild(img);
-            infoContainer.appendChild(name);
-            infoContainer.appendChild(email);
-            infoContainer.appendChild(location);
-            infoContainer.appendChild(hr);
-            infoContainer.appendChild(phone);
-            infoContainer.appendChild(address);
-            infoContainer.appendChild(birthday);
+            body.appendChild(modal);
         }
     }
 };
