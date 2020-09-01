@@ -1,10 +1,11 @@
+const numOfRecords = 12;
 const search = document.querySelector('.search-container');
 const gallery = document.querySelector('#gallery');
 const body = document.querySelector('body');
 let employees = [];
 
 // fetch the employees from the Random User Generator API
-fetch('https://randomuser.me/api/?results=12&inc=name,picture,email,location,cell,dob&noinfo&nat=us')
+fetch(`https://randomuser.me/api/?results=${numOfRecords}&inc=name,picture,email,location,cell,dob&noinfo&nat=us`)
     .then( response => response.json() )
     .then( data => {
         employees = data.results;
@@ -50,7 +51,8 @@ const createDirectory = () => {
 };
 
 const createModal = (email) => {
-    for (let employee of employees) {
+    for (let i=0; i<employees.length; i++) {
+        const employee = employees[i];
         if (email === employee.email) {
             const modal = document.createElement('div');
             modal.className = 'modal-container'
@@ -77,6 +79,32 @@ const createModal = (email) => {
             `;
 
             body.appendChild(modal);
+
+            // close modal window when 'x' is clicked
+            document.getElementById('modal-close-btn').addEventListener('click', () => {
+                body.removeChild(modal);
+            });
+
+            // show modal of previous employee in shown directory
+            document.getElementById('modal-prev').addEventListener('click', () => {
+                body.removeChild(modal);
+                if ((i - 1) >= 0) {
+                    createModal(employees[(i - 1)].email);
+                } else {
+                    createModal(employees[(numOfRecords - 1)].email); 
+                }
+            });
+
+            // show modal of next employee in shown directory
+            document.getElementById('modal-next').addEventListener('click', () => {
+                body.removeChild(modal);
+                if ((i + 1) < employees.length) {
+                    createModal(employees[(i + 1)].email);
+                } else {
+                    createModal(employees[(0)].email); 
+                }
+            });
         }
     }
+
 };
