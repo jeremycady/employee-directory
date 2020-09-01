@@ -136,6 +136,7 @@ const createModal = (email) => {
 
 };
 
+// listen for submissions of the search form and filter results shown on page
 document.getElementById('search-submit').addEventListener('click', (e) => {
     e.preventDefault();
     const search = document.getElementById('search-input');
