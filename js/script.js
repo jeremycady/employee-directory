@@ -13,6 +13,14 @@ fetch(`https://randomuser.me/api/?results=${numOfRecords}&inc=name,picture,email
         createDirectory();
     });
 
+// add search input to page
+search.innerHTML = `
+    <form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>
+`;
+
 // reformats cell number and birthdate
 const formatData = () => {
     for (let employee of employees) {
@@ -88,23 +96,56 @@ const createModal = (email) => {
             // show modal of previous employee in shown directory
             document.getElementById('modal-prev').addEventListener('click', () => {
                 body.removeChild(modal);
-                if ((i - 1) >= 0) {
-                    createModal(employees[(i - 1)].email);
-                } else {
-                    createModal(employees[(numOfRecords - 1)].email); 
+                for (let j = i; j < employees.length;) {
+                    const cards = document.querySelectorAll('.card');
+                    if (j === 0) {
+                        j = numOfRecords - 1;
+                        if(cards[j].style.display === 'block') {
+                            return createModal(employees[j].email);
+                        }
+                    } else {
+                        j -=1;
+                        if(cards[j].style.display === 'block') {
+                            return createModal(employees[j].email);
+                        }
+                    }
                 }
             });
 
             // show modal of next employee in shown directory
             document.getElementById('modal-next').addEventListener('click', () => {
                 body.removeChild(modal);
-                if ((i + 1) < employees.length) {
-                    createModal(employees[(i + 1)].email);
-                } else {
-                    createModal(employees[(0)].email); 
+                for (let j = i; j < employees.length;) {
+                    const cards = document.querySelectorAll('.card');
+                    if (j === numOfRecords - 1) {
+                        j = 0;
+                        if(cards[j].style.display === 'block') {
+                            return createModal(employees[j].email);
+                        }
+                    } else {
+                        j += 1;
+                        if(cards[j].style.display === 'block') {
+                            return createModal(employees[j].email);
+                        }
+                    }
                 }
             });
         }
     }
 
 };
+
+document.getElementById('search-submit').addEventListener('click', () => {
+    const search = document.getElementById('search-input');
+    const cards = document.querySelectorAll('.card');
+    for (let card of cards) {
+        const info = card.lastElementChild;
+        const name = info.firstElementChild;
+        
+        if (name.textContent.toLowerCase().includes(search.value.toLowerCase())) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    }
+});
