@@ -38,6 +38,7 @@ const createDirectory = () => {
     for (let employee of employees ) {
         const card = document.createElement('div');
         card.className = 'card';
+        card.style.display = 'flex';
         
         card.innerHTML = `
             <div class="card-img-container">
@@ -46,7 +47,7 @@ const createDirectory = () => {
             <div class="card-info-container">
                 <h3 class="card-name cap">${employee.name.first} ${employee.name.last}</h3>
                 <p class="card-text">${employee.email}</p>
-                <p class="card-text cap">${employee.location.city}, ${employee.location.state}</p>
+                <p class="card-text cap">${employee.location.city}</p>
             </div>
         `;
 
@@ -100,12 +101,12 @@ const createModal = (email) => {
                     const cards = document.querySelectorAll('.card');
                     if (j === 0) {
                         j = numOfRecords - 1;
-                        if(cards[j].style.display === 'block') {
+                        if(cards[j].style.display === 'flex') {
                             return createModal(employees[j].email);
                         }
                     } else {
                         j -=1;
-                        if(cards[j].style.display === 'block') {
+                        if(cards[j].style.display === 'flex') {
                             return createModal(employees[j].email);
                         }
                     }
@@ -119,12 +120,12 @@ const createModal = (email) => {
                     const cards = document.querySelectorAll('.card');
                     if (j === numOfRecords - 1) {
                         j = 0;
-                        if(cards[j].style.display === 'block') {
+                        if(cards[j].style.display === 'flex') {
                             return createModal(employees[j].email);
                         }
                     } else {
                         j += 1;
-                        if(cards[j].style.display === 'block') {
+                        if(cards[j].style.display === 'flex') {
                             return createModal(employees[j].email);
                         }
                     }
@@ -135,7 +136,8 @@ const createModal = (email) => {
 
 };
 
-document.getElementById('search-submit').addEventListener('click', () => {
+document.getElementById('search-submit').addEventListener('click', (e) => {
+    e.preventDefault();
     const search = document.getElementById('search-input');
     const cards = document.querySelectorAll('.card');
     for (let card of cards) {
@@ -143,7 +145,7 @@ document.getElementById('search-submit').addEventListener('click', () => {
         const name = info.firstElementChild;
         
         if (name.textContent.toLowerCase().includes(search.value.toLowerCase())) {
-            card.style.display = 'block';
+            card.style.display = 'flex';
         } else {
             card.style.display = 'none';
         }
