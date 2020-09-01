@@ -21,7 +21,7 @@ Clicking on an employee's information "card" will open a modal window with more 
 * full address
 * date of birth
 
-The modal window had previous and next buttons that allows one to move through each of the employees shown on the page. Clicking the "X" button closes the modal window.
+The modal window has previous and next buttons that allows one to move through each of the employees shown on the page. Clicking the "X" button closes the modal window.
 
 Entering a value in the search form will filter the names matching the entered value.
 
